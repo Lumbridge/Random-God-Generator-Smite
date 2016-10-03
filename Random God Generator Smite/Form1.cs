@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HtmlAgilityPack;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Random_God_Generator_Smite
 {
@@ -69,7 +70,6 @@ namespace Random_God_Generator_Smite
                 .ToList();
         }
 
-
         private void addPageDataToLists()
         {
             downloadWebpage();
@@ -86,7 +86,6 @@ namespace Random_God_Generator_Smite
             for (int i = 1; i < contents.Count; i += 9)
             {
                 godNames.Add(contents[i]);
-                Console.WriteLine(godNames[i-1] + " added to god names list at index " + (i-1));
             }
             // add pantheons to list 2n+9
             for (int i = 2; i < contents.Count; i += 9)
@@ -107,7 +106,6 @@ namespace Random_God_Generator_Smite
             for (int i = 5; i < contents.Count; i += 9)
             {
                 godClass.Add(contents[i]);
-                Console.WriteLine(contents[i] + " added to contents list at index " + i);
             }
             // add favor cost to list 6n+9
             for (int i = 6; i < contents.Count; i += 9)
@@ -128,28 +126,34 @@ namespace Random_God_Generator_Smite
 
         private void populateClassLists()
         {
+            int counter = 0;
+
             foreach (string gclass in godClass)
             {
-                if (gclass == "hunter")
+                if (gclass == "Hunter")
                 {
-                    hunter.Add(godNames[gclass.IndexOf(gclass)]);
-                    Console.WriteLine(godNames[gclass.IndexOf(gclass)] + " added to hunter list");
+                    hunter.Add(godNames[counter]);
+                    counter++;
                 }
-                else if (gclass == "mage")
+                else if (gclass == "Mage")
                 {
-                    mage.Add(godNames[gclass.IndexOf(gclass)]);
+                    mage.Add(godNames[counter]);
+                    counter++;
                 }
-                else if (gclass == "assassin")
+                else if (gclass == "Assassin")
                 {
-                    assassin.Add(godNames[gclass.IndexOf(gclass)]);
+                    assassin.Add(godNames[counter]);
+                    counter++;
                 }
-                else if (gclass == "guardian")
+                else if (gclass == "Guardian")
                 {
-                    guardian.Add(godNames[gclass.IndexOf(gclass)]);
+                    guardian.Add(godNames[counter]);
+                    counter++;
                 }
-                else if(gclass == "warrior")
+                else if(gclass == "Warrior")
                 {
-                    warrior.Add(godNames[gclass.IndexOf(gclass)]);
+                    warrior.Add(godNames[counter]);
+                    counter++;
                 }
             }
         }
@@ -161,28 +165,43 @@ namespace Random_God_Generator_Smite
             // 3. Populate combo box with class selection / all gods
             // 4. Choose random god button selects random index from whichever list is selected in combo box
 
-            Console.WriteLine("Loaded form.");
+            godClassSelectionComboBox.SelectedIndex = 0;
 
             addPageDataToLists();
             populateClassLists();
-
-            foreach(string item in godClass)
-            {
-                godClassSelectionComboBox.Items.Add(item);
-            }
-        }
-
-        private void godClassSelectionComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void generateRandomGodButton_Click(object sender, EventArgs e)
         {
-            if(godClassSelectionComboBox.SelectedText == "mage")
+            if (godClassSelectionComboBox.Text == "Any Class")
             {
-                generatedGodLabel.Text = mage[rng.Next(0, mage.Count)];
+                generatedGodLabel.Text = godNames[rng.Next(godNames.Count)];
             }
+            else if (godClassSelectionComboBox.Text == "Mage")
+            {
+                generatedGodLabel.Text = mage[rng.Next(mage.Count)];
+            }
+            else if (godClassSelectionComboBox.Text == "Hunter")
+            {
+                generatedGodLabel.Text = hunter[rng.Next(hunter.Count)];
+            }
+            else if (godClassSelectionComboBox.Text == "Guardian")
+            {
+                generatedGodLabel.Text = guardian[rng.Next(guardian.Count)];
+            }
+            else if (godClassSelectionComboBox.Text == "Assassin")
+            {
+                generatedGodLabel.Text = assassin[rng.Next(assassin.Count)];
+            }
+            else if (godClassSelectionComboBox.Text == "Warrior")
+            {
+                generatedGodLabel.Text = warrior[rng.Next(warrior.Count)];
+            }
+        }
+
+        private void infoButton_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("This program doesn't need to update for new god releases, it will automatically add new gods to the generator.");
         }
     }
 }
